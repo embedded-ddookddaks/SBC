@@ -1,0 +1,16 @@
+# 딜리봇 시스템 패키지 의존성
+# 라즈베리파이 5
+# 설치: pip3 install -r requirements.txt
+
+# 시리얼 통신
+pyserial>=3.5
+
+# LiDAR 센서 (YDLidar X4 Pro)
+# 주의: YDLidar SDK 먼저 설치 필요
+# https://github.com/YDLIDAR/YDLidar-SDK
+# pip3 install ydlidar
+
+# GPIO (라즈베리파이 5)
+# RPi.GPIO 대신 lgpio 사용 권장
+# sudo apt-get install python3-lgpio
+# 또는: pip3 install lgpio
