@@ -11,6 +11,13 @@ import time
 import threading
 import queue
 import sys
+import pygame, sys
+
+pygame.init()
+pygame.joystick.init()
+js = pygame.joystick.Joystick(0)
+js.init()
+clock = pygame.time.Clock()
 
 import config
 from lidar_reader import LidarReader
@@ -244,7 +251,11 @@ class ObstacleDetectionSystem:
         try:
             while self.running:
                 current_time = time.time()
-                
+                for e in pygame.event.get():
+                    if e.type == pygame.JOYBUTTONDOWN:
+                        print("Button", e.button, "DOWN")
+                        # UART 코드 추가 예정
+                clock.tick(120)
                 # 장애물 감지 업데이트 (20Hz)
                 if current_time - last_update_time >= config.SENSOR_READ_INTERVAL:
                     last_update_time = current_time
