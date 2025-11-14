@@ -1,6 +1,23 @@
 import sys, argparse
 import pygame
 import serial
+import struct
+
+WEIGHT_FORMAT = "<iff"
+
+def make_weight_bytes(command: int, left: float, right: float) -> bytes:
+    """
+    C의 weight 구조체에 해당하는 12바이트 패킷을 생성
+    """
+    return struct.pack(WEIGHT_FORMAT, command, left, right)
+
+def send_weight(ser: serial.Serial, command: int, left: float, right: float):
+    frame = make_weight_bytes(command, left, right)
+    ser.write(frame)
+    ser.flush()
+
+PORT = "/dev/ttyAMA0"
+BAUD = 115200
 
 def main():
     ap = argparse.ArgumentParser(description="Joystick -> UART (no parsing)")
@@ -30,11 +47,13 @@ def main():
     print("Name:", js.get_name(), "Axes:", js.get_numaxes(), "Buttons:", js.get_numbuttons())
 
     clock = pygame.time.Clock()
-
+    ser = serial.Serial(PORT, BAUD, timeout=1)
     try:
         while True:
             for e in pygame.event.get():
                 if e.type == pygame.JOYBUTTONDOWN:
+                    send_weight(ser,e.button,0,0)
+                    continue
                     btn = e.button
                     print(f"Button {btn } DOWN -> TX 1 byte")
                     # 버튼 인덱스를 '그대로' 1바이트로 전송
